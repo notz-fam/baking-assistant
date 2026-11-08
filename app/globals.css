@@ -1,0 +1,866 @@
+:root {
+  --paper: #fbf6ec; /* 生成り */
+  --white: #fffdf8;
+  --bread: #9a6131; /* パンの茶色 */
+  --bread-dark: #6f4120;
+  --bread-light: #e9cfa8;
+  --sky: #dcebf2; /* 淡い水色 */
+  --sky-line: #c9dfea;
+  --ink: #2b2622; /* 文字・線 */
+  --ink-soft: #5d554e;
+  --error: #a33a22;
+
+  /* ObsidianUI Discover Button の色 */
+  --obsidian-discover-surface: var(--white);
+  --obsidian-discover-fill: var(--bread);
+  --obsidian-discover-text: var(--ink);
+  --obsidian-discover-active-text: #fff;
+  --ring: var(--bread-dark);
+
+  /* 手描き風の揺らぎのある角 */
+  --wobble: 255px 18px 225px 16px / 16px 225px 18px 255px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  overflow-x: hidden;
+  /* Kitchen frame の水色ストライプ */
+  background-color: var(--sky);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--sky) 0 22px,
+    var(--sky-line) 22px 44px
+  );
+  min-height: 100dvh;
+}
+
+img {
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ---------- 外枠：PC では中央にスマホ幅 ---------- */
+.stage {
+  position: relative;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100dvh;
+  background: var(--paper);
+  /* 紙っぽい地：ごく薄い斑点 */
+  background-image: radial-gradient(rgb(154 97 49 / 5%) 1px, transparent 1.4px);
+  background-size: 7px 7px;
+}
+
+@media (min-width: 600px) {
+  .app {
+    border-left: 3px solid var(--ink);
+    border-right: 3px solid var(--ink);
+    box-shadow: 8px 0 0 rgb(43 38 34 / 12%);
+  }
+}
+
+/* PC のときだけ余白にパン */
+.deco {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .deco {
+    display: block;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+  .deco img {
+    position: absolute;
+    width: 150px;
+  }
+  .deco-1 { left: 9%; top: 12%; transform: rotate(-8deg); }
+  .deco-2 { left: 14%; top: 58%; transform: rotate(5deg); width: 170px; }
+  .deco-3 { right: 10%; top: 18%; transform: rotate(10deg); }
+  .deco-4 { right: 13%; top: 62%; transform: rotate(-6deg); width: 190px; }
+  .deco-5 { left: 3%; bottom: 4%; width: 110px; transform: rotate(-3deg); }
+}
+
+/* ---------- 画面共通 ---------- */
+.screen {
+  padding: 20px 20px calc(120px + env(safe-area-inset-bottom));
+  animation: fade-in 260ms ease-out;
+}
+
+/* transform を使うと fixed の下部ボタンがずれるので、画面全体はフェードのみ */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.topbar {
+  margin: -6px 0 6px -8px;
+}
+
+.back,
+.link-btn {
+  min-height: 48px;
+  padding: 0 10px;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.link-btn {
+  display: block;
+  margin: 18px 0 0 auto;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--bread-light);
+  text-underline-offset: 6px;
+}
+
+/* ---------- 取り込み ---------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 26px -4px;
+}
+
+.brand-pic {
+  width: 96px;
+  transform: rotate(-10deg);
+  flex: none;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.brand-sub {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  position: relative;
+  display: inline-block;
+}
+
+.brand-sub::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: -6px;
+  bottom: -4px;
+  height: 6px;
+  background: var(--bread-light);
+  border-radius: 40% 60% 50% 50%;
+  z-index: -1;
+}
+
+.card {
+  background: var(--white);
+  border: 2.5px solid var(--ink);
+  border-radius: var(--wobble);
+  padding: 18px 18px 16px;
+  box-shadow: 4px 5px 0 rgb(43 38 34 / 14%);
+}
+
+.label {
+  display: block;
+  margin: 0 0 8px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.input {
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px dashed var(--ink-soft);
+  border-radius: 10px 14px 9px 12px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.input:focus {
+  outline: none;
+  border-style: solid;
+  border-color: var(--bread);
+}
+
+.hint {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.error {
+  margin: 12px 0 0;
+  color: var(--error);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 0 12px;
+  font-weight: 700;
+}
+
+.loading img {
+  width: 64px;
+  animation: bob 1.2s ease-in-out infinite alternate;
+}
+
+.loading p {
+  margin: 0;
+}
+
+@keyframes bob {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(6deg) translateY(-3px); }
+}
+
+/* ---------- 画面下の主ボタン ---------- */
+.bottom-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 5;
+  width: 100%;
+  max-width: 430px;
+  transform: translateX(-50%);
+  padding: 14px 20px calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--paper) 70%, rgb(251 246 236 / 0));
+  display: flex;
+  justify-content: center;
+}
+
+.main-btn.obsidian-discover-button {
+  width: 100%;
+  border: 2.5px solid var(--ink);
+  box-shadow: 3px 4px 0 var(--ink);
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.main-btn .obsidian-discover-button__text {
+  flex: 1;
+}
+
+.main-btn:active {
+  transform: translate(2px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.main-btn:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.main-btn:disabled .obsidian-discover-button__fill {
+  background: var(--ink-soft);
+}
+
+/* ---------- リボン見出し ---------- */
+.ribbon {
+  position: relative;
+  width: 250px;
+  height: 56px;
+  margin: 30px 0 14px -10px;
+  background: url("/illustrations/ribbon-flat.png") no-repeat center / contain;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.ribbon span {
+  position: absolute;
+  left: 13%;
+  right: 13%;
+  top: 4px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- 分量換算 ---------- */
+.recipe-title {
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 1.35;
+  margin: 4px 0 4px;
+}
+
+.yield {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.source {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--bread-dark);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.base-card {
+  margin: 0 0 14px;
+  transform: rotate(-0.6deg);
+}
+
+.base-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.base-input {
+  font-size: 30px;
+  font-weight: 900;
+  width: 160px;
+  padding: 6px 12px;
+  color: var(--bread-dark);
+}
+
+.unit {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.ingredients {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ing {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-bottom: 2px dotted rgb(43 38 34 / 30%);
+  font-size: 17px;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+
+.ing-group {
+  margin: 14px 0 2px;
+  display: inline-block;
+  padding: 0 10px;
+  font-weight: 900;
+  font-size: 16px;
+  color: #fff;
+  background: var(--bread);
+  border-radius: 10px 4px 12px 5px;
+}
+
+.in-group .ing {
+  padding-left: 18px;
+}
+
+.ing:disabled {
+  cursor: default;
+  color: var(--ink);
+}
+
+.ing.is-base {
+  background: var(--bread-light);
+  border-radius: 12px 6px 14px 8px;
+}
+
+.ing.is-base .ing-name::before {
+  content: "基準";
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 6px;
+  font-size: 12px;
+  color: #fff;
+  background: var(--bread);
+  border-radius: 6px 3px 7px 4px;
+  vertical-align: 2px;
+}
+
+.ing-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+}
+
+.num {
+  font-weight: 900;
+  font-size: 19px;
+  font-variant-numeric: tabular-nums;
+  animation: num-in 220ms ease-out;
+}
+
+.num small {
+  font-size: 13px;
+  margin-right: 2px;
+  color: var(--ink-soft);
+}
+
+.orig {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+@keyframes num-in {
+  from { opacity: 0.2; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.steps-preview {
+  margin: 0;
+  padding: 0 0 0 1.6em;
+  font-size: 16px;
+}
+
+.steps-preview li {
+  margin-bottom: 10px;
+}
+
+.steps-preview li::marker {
+  font-weight: 900;
+  color: var(--bread);
+}
+
+.step-note {
+  display: block;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.step-thumb {
+  display: block;
+  width: 120px;
+  height: 96px;
+  margin: 6px 0 4px;
+  object-fit: cover;
+  border: 2px solid var(--ink);
+  border-radius: 10px 4px 12px 6px;
+}
+
+/* ---------- チェックリスト ---------- */
+.lead {
+  margin: 0 0 14px;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+
+.checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checklist li:nth-child(even) .check {
+  margin-left: 10px;
+  margin-right: -4px;
+}
+
+.check {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-height: 64px;
+  padding: 14px 14px;
+  background: var(--white);
+  border: 2.5px solid var(--ink);
+  border-radius: var(--wobble);
+  box-shadow: 3px 4px 0 rgb(43 38 34 / 14%);
+  cursor: pointer;
+  transition: background-color 200ms, opacity 200ms;
+}
+
+.check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.box {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-top: 1px;
+  border: 2.5px solid var(--ink);
+  border-radius: 8px 5px 9px 6px;
+  background: var(--paper);
+  position: relative;
+}
+
+.check.is-done {
+  background: #f2e6d2;
+}
+
+.check.is-done .box {
+  background: var(--bread);
+  border-color: var(--bread-dark);
+  animation: pop 260ms ease-out;
+}
+
+.check.is-done .box::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 3px;
+  width: 9px;
+  height: 17px;
+  border: solid #fff;
+  border-width: 0 4px 4px 0;
+  transform: rotate(40deg);
+}
+
+.check input:focus-visible + .box {
+  outline: 3px solid var(--bread);
+  outline-offset: 2px;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.25) rotate(-6deg); }
+  100% { transform: scale(1); }
+}
+
+.check-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.check-text {
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.check.is-done .check-text {
+  text-decoration: line-through;
+  text-decoration-color: var(--bread);
+  text-decoration-thickness: 2px;
+}
+
+.check-timing {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.ready {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+  font-weight: 900;
+  font-size: 18px;
+  animation: screen-in 300ms ease-out both;
+}
+
+.ready img {
+  width: 90px;
+}
+
+/* 事前の段取りがないとき */
+.no-prep {
+  margin: 28px 8px 0 0;
+  padding: 26px 22px 22px;
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: var(--wobble);
+  transform: rotate(-1.2deg);
+  animation: screen-in 300ms ease-out both;
+}
+
+.no-prep img {
+  display: block;
+  width: 110px;
+  margin: -54px 0 6px auto;
+}
+
+.no-prep p {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.6;
+}
+
+/* ---------- 調理モード：装飾を減らし大きく高コントラスト ---------- */
+.cook {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  max-width: 430px;
+  margin: 0 auto;
+  background: #fffdf8;
+  color: #111;
+  animation: screen-in 200ms ease-out both;
+}
+
+@media (min-width: 600px) {
+  .cook {
+    border-left: 3px solid var(--ink);
+    border-right: 3px solid var(--ink);
+  }
+}
+
+.cook-tap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 10px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overflow-y: auto;
+}
+
+.cook-progress {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--bread-dark);
+}
+
+.cook-bar {
+  height: 8px;
+  margin: 8px 0 0;
+  background: #eadfcf;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cook-bar span {
+  display: block;
+  height: 100%;
+  background: var(--bread);
+  transition: width 200ms ease-out;
+}
+
+.cook-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 0;
+  animation: step-in 140ms ease-out both;
+}
+
+@keyframes step-in {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.cook-text {
+  margin: 0;
+  font-size: clamp(28px, 8vw, 36px);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.cook-timer {
+  margin: 20px 0 0;
+  align-self: flex-start;
+  padding: 4px 14px;
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  background: #111;
+  border-radius: 8px;
+}
+
+.cook-text.is-long {
+  font-size: clamp(24px, 6.6vw, 29px);
+}
+
+.cook-note {
+  margin: 16px 0 0;
+  padding: 8px 12px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.6;
+  color: #333;
+  background: #f1ece4;
+  border-left: 6px solid #888;
+  border-radius: 4px;
+}
+
+.cook-photo {
+  display: block;
+  width: 100%;
+  max-height: 32vh;
+  margin: 18px 0 0;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f1ece4;
+}
+
+.cook-uses {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 10px 0 0;
+  border-top: 3px solid var(--ink);
+}
+
+.cook-uses li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.cook-uses-group {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 6px;
+  font-size: 15px;
+  color: #fff;
+  background: #111;
+  border-radius: 4px;
+  vertical-align: 3px;
+}
+
+.cook-uses-amt {
+  flex: none;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.cook-alert {
+  margin: 12px 0 0;
+  font-size: 20px;
+  font-weight: 700;
+  border-left: 6px solid var(--bread);
+  padding-left: 10px;
+}
+
+.cook-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: #6b6159;
+}
+
+.cook-done {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.cook-done img {
+  width: 180px;
+}
+
+.cook-done p {
+  margin: 10px 0 0;
+}
+
+.cook-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px calc(10px + env(safe-area-inset-bottom));
+  border-top: 2px solid #e6dccd;
+}
+
+.cook-nav button {
+  min-width: 96px;
+  min-height: 52px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  background: none;
+  border: 2px solid #111;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.cook-nav button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ---------- 動きを減らす設定 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* 音声操作ボタン */
+.cook-nav .voice-btn {
+  flex: 1;
+  margin: 0 8px;
+  max-width: 180px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cook-nav .voice-btn.is-on {
+  color: #fff;
+  background: var(--bread);
+  border-color: var(--bread-dark);
+}
